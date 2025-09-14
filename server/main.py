@@ -5,10 +5,9 @@ import numpy as np
 from PIL import Image
 import google.generativeai as genai
 import os
-
+from dotenv import load_dotenv
 
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,23 +17,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+# Load CNN model
 try:
-    cnn_model = tf.keras.models.load_model("plant_disease_model.keras")
+    cnn_model = tf.keras.models.load_model("models/plant_disease_model.keras")  # FIXED PATH
     print("✅ CNN model loaded successfully")
 except Exception as e:
     print(f"❌ Error loading CNN model: {e}")
     cnn_model = None
 
+# Configure Gemini AI with debug info
+load_dotenv()  
+api_key = os.getenv("GOOGLE_API_KEY")
+print(f"🔑 API Key present: {bool(api_key)}")
+if api_key:
+    print(f"🔑 API Key: {api_key[:10]}...")  # Show first 10 chars
 
 try:
-    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+    genai.configure(api_key=api_key)
     gemini_model = genai.GenerativeModel("gemini-1.5-flash")
     print("✅ Gemini AI configured successfully")
 except Exception as e:
     print(f"❌ Error configuring Gemini AI: {e}")
     gemini_model = None
-
 
 class_names = ['Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy', 'Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy', 'Tomato_Bacterial_spot', 'Tomato_Early_blight', 'Tomato_Late_blight', 'Tomato_Leaf_Mold', 'Tomato_Septoria_leaf_spot', 'Tomato_Spider_mites_Two_spotted_spider_mite', 'Tomato__Target_Spot', 'Tomato__Tomato_YellowLeaf__Curl_Virus', 'Tomato__Tomato_mosaic_virus', 'Tomato_healthy']
 
@@ -53,7 +57,6 @@ async def analyze_plant(file: UploadFile = File(...), question: str = Form("")):
         if gemini_model is None:
             raise HTTPException(status_code=500, detail="Gemini AI not configured")
         
-       
         if not file.content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail="File must be an image")
         
@@ -80,5 +83,3 @@ async def analyze_plant(file: UploadFile = File(...), question: str = Form("")):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Processing error: {str(e)}")
-    
-

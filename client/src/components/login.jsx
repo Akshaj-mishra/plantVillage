@@ -16,6 +16,14 @@ export const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Prevent scrolling when login modal is open
+  React.useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   // Handles both login and signup
   const handleEmailAuth = async () => {
     if (!email || !password) {
@@ -87,13 +95,13 @@ export const Login = () => {
   };
 
   return (
-    <div className="absolute top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center">
+    <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black/30 flex justify-center items-center overflow-hidden"> {/* Added fixed and overflow-hidden */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleEmailAuth();
         }}
-        className="relative bg-white p-10 rounded-xl text-slate-500 w-full max-w-md shadow-xl"
+        className="relative bg-white p-10 rounded-xl text-slate-500 w-full max-w-md shadow-xl mx-4" // Added mx-4 for mobile padding
       >
         <h1 className="text-center text-2xl text-neutral-700 font-medium">
           Login or Sign Up
@@ -155,7 +163,7 @@ export const Login = () => {
           onClick={() => setshowlogin(false)}
           src={assets.crossIcon}
           alt="Close"
-          className="absolute top-5 right-5 cursor-pointer"
+          className="absolute top-5 right-5 cursor-pointer w-6 h-6"
         />
       </form>
     </div>
