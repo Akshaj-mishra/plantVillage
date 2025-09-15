@@ -17,20 +17,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load CNN model
+
 try:
-    cnn_model = tf.keras.models.load_model("models/plant_disease_model.keras")  # FIXED PATH
+    cnn_model = tf.keras.models.load_model("models/plant_disease_model.keras")  
     print("✅ CNN model loaded successfully")
 except Exception as e:
     print(f"❌ Error loading CNN model: {e}")
     cnn_model = None
 
-# Configure Gemini AI with debug info
+
 load_dotenv()  
 api_key = os.getenv("GOOGLE_API_KEY")
 print(f"🔑 API Key present: {bool(api_key)}")
 if api_key:
-    print(f"🔑 API Key: {api_key[:10]}...")  # Show first 10 chars
+    print(f"🔑 API Key: {api_key[:10]}...")  
 
 try:
     genai.configure(api_key=api_key)
