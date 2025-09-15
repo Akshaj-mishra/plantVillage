@@ -83,7 +83,7 @@ export const Footer = () => {
         {/* Footer bottom */}
         <div className="text-center mt-16 pt-8 border-t border-green-100">
           <p className="text-green-600/70 text-sm">
-            © 2024 PlantAI • Made with 🌱 for gardeners everywhere
+            © 2025 PlantAI • Made with 🌱 for gardeners everywhere
           </p>
         </div>
       </div>
