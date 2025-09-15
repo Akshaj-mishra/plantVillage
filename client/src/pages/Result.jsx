@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Search, Plus, Upload, X } from "lucide-react";
+import removeMarkdown from "remove-markdown";
 
 function Result() {
   const [prompt, setPrompt] = useState("");
@@ -12,20 +13,14 @@ function Result() {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(file);
-      
-    
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
   const removeImage = () => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
     setSelectedImage(null);
     setImagePreview(null);
-    
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-    }
   };
 
   const handleAnalyzePlant = async () => {
@@ -42,14 +37,9 @@ function Result() {
       formData.append("file", selectedImage);
       formData.append("question", prompt);
 
-      // Use different URL for production vs development
       const API_URL = `${import.meta.env.VITE_BACKEND_URL}/analyze-plant`;
-        
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(API_URL, { method: "POST", body: formData });
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -67,14 +57,18 @@ function Result() {
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
+    <div className="p-4 max-w-3xl mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-green-800 mb-2">Plant Disease Analyzer</h1>
-        <p className="text-gray-600">Upload a plant image to detect diseases and get treatment advice</p>
+        <h1 className="text-3xl font-bold text-green-800 mb-2">
+          Plant Disease Analyzer
+        </h1>
+        <p className="text-gray-600">
+          Upload a plant image to detect diseases and get treatment advice
+        </p>
       </div>
 
-      {/* Upload and Input Section */}
+      {/* Upload + Input */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <div className="flex flex-col md:flex-row items-center gap-4">
           {/* Image Upload */}
@@ -104,7 +98,7 @@ function Result() {
                 />
                 <button
                   onClick={removeImage}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition"
                 >
                   <X size={14} />
                 </button>
@@ -130,7 +124,7 @@ function Result() {
           <button
             onClick={handleAnalyzePlant}
             disabled={loading || !selectedImage}
-            className="flex items-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-w-[120px] justify-center"
+            className="flex items-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[120px] justify-center"
           >
             {loading ? (
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -150,7 +144,7 @@ function Result() {
         )}
       </div>
 
-      {/* Results Section */}
+      {/* Loading */}
       {loading && (
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
@@ -158,29 +152,33 @@ function Result() {
         </div>
       )}
 
+      {/* Results */}
       {result && !loading && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-green-800 mb-4">Analysis Results</h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Disease Information */}
-            <div className="bg-green-50 rounded-lg p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Disease Detection</h3>
-              <p className="text-lg font-bold text-gray-800">{result.disease}</p>
-              <p className="text-green-600">
-                Confidence: {(result.confidence * 100).toFixed(1)}%
-              </p>
-            </div>
+        <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
+          <h2 className="text-2xl font-bold text-green-800">Analysis Results</h2>
 
-            {/* Solution */}
-            <div className="bg-blue-50 rounded-lg p-4">
-              <h3 className="font-semibold text-blue-700 mb-2">Treatment Advice</h3>
-              <p className="text-gray-700 whitespace-pre-wrap">{result.solution}</p>
-            </div>
+          {/* Disease Info */}
+          <div className="bg-green-50 rounded-lg p-4">
+            <h3 className="font-semibold text-green-700 mb-2">
+              Disease Detected
+            </h3>
+            <p className="text-lg font-bold text-gray-800">{result.disease}</p>
+            <p className="text-green-600">
+              Confidence: {(result.confidence * 100).toFixed(1)}%
+            </p>
           </div>
 
+          {/* Solution */}
+          <div className="bg-blue-50 rounded-lg p-4">
+            <h3 className="font-semibold text-blue-700 mb-2">Treatment Advice</h3>
+            <p className="text-gray-700 whitespace-pre-wrap">
+              {removeMarkdown(result.solution)}
+            </p>
+          </div>
+
+          {/* Question */}
           {prompt && (
-            <div className="mt-4 bg-gray-50 rounded-lg p-4">
+            <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-semibold text-gray-700 mb-2">Your Question</h3>
               <p className="text-gray-600">{prompt}</p>
             </div>

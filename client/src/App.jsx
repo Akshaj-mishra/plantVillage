@@ -6,6 +6,7 @@ import Nevbar from './components/Nevbar'
 import Login from './components/login'
 import { AppContext } from './context/Appcontext';
 import { useNavigate } from "react-router-dom";
+import Leaf from './components/Leaf'
 
 const App = () => {
     const { showlogin } = useContext(AppContext);
@@ -22,17 +23,15 @@ const App = () => {
 
   return (
     <div className='px-6 sm:px-12 md:px-16 lg:px-30 min-h-screen bg-gradient-to-b from-white to-green-200'>
-
-
-    <Nevbar/>
-    {showlogin && <Login/> }
+      {/* Leaf cursor follower - will appear on all pages */}
+      <Leaf />
+      
+      <Nevbar/>
+      {showlogin && <Login/> }
       <Routes>
-
         <Route path='/' element = {<Home/>}/>
         <Route path='/result' element = {<Result/>}/>
-        
       </Routes>
-  
     </div>
   )
 }

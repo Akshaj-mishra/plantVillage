@@ -30,7 +30,7 @@ app.add_middleware(
 
 # Load CNN model
 try:
-    cnn_model = tf.keras.models.load_model("plant_disease_model.keras")
+    cnn_model = tf.keras.models.load_model("models/plant_disease_model.keras")
     print("✅ CNN model loaded successfully")
 except Exception as e:
     print(f"❌ Error loading CNN model: {e}")
