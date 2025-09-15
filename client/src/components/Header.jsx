@@ -33,7 +33,7 @@ export const Header = () => {
           Turn{" "}
           <span className="bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 
           bg-clip-text text-transparent bg-300% animate-gradient">
-            images
+            Images
           </span>{" "}
           into
         </h1>
@@ -44,7 +44,7 @@ export const Header = () => {
           <span className="relative">
             <span className="bg-gradient-to-r from-emerald-600 via-green-600 to-emerald-700 
             bg-clip-text text-transparent bg-300% animate-gradient">
-              information
+              Information
             </span>
             <span className="absolute -right-8 -top-2 text-3xl">🚀</span>
           </span>

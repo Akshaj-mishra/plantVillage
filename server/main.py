@@ -96,15 +96,18 @@ async def analyze_plant(file: UploadFile = File(...), question: str = Form("")):
         disease = class_names[class_idx]
         confidence = float(np.max(predictions[0]))
 
-        # Build Gemini prompt
-        base_prompt = (
+        base_prompt = ""
+        
+        
+        if question.strip():
+            base_prompt += f"\n\nThe user also asks: {question}"
+        
+        base_prompt += (
+            
             f"This plant is diagnosed with **{disease}** "
             f"(confidence {confidence:.2f}). Suggest how to treat and prevent it in simple steps."
         )
-        if question.strip():
-            base_prompt += f"\n\nThe user also asks: {question}"
-
-        
+  
         response = gemini_model.generate_content(base_prompt)
 
         return {
