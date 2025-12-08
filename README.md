@@ -16,7 +16,7 @@ PlantVillage Disease Detection System is an end-to-end AI application that ident
 It uses a **CNN model trained on the PlantVillage dataset**, a **FastAPI backend** for inference, **Google Gemini API** for explanation generation, and a modern **React.js frontend** for seamless user interaction.
 
 The entire project is fully deployed using **Firebase Hosting**.
-**Live demo link ** : https://imagegrnai.web.app
+Live demo link : https://imagegrnai.web.app
 
 ---
 
